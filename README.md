@@ -32,7 +32,7 @@ Get instance of ImageManager:
 val imageManager: ImageManager = ImageManagerImpl()
 ```
 
-Forward permission results to ImageHandler for handling permission requests:
+Forward permission results to ImageManager for handling permission requests:
 ```kotlin
 override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
   if (!imageManager.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
@@ -42,7 +42,7 @@ override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out
 ```
 
 
-Forward activity results to ImageHandler for handling Intent responses:
+Forward activity results to ImageManager for handling Intent responses:
 ```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (!imageManager.onActivityResult(applicationContext, requestCode, resultCode, data)) {
