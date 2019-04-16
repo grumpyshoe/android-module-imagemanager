@@ -53,7 +53,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 ## Customize
 
-If you want your own text at the _permission-explanation-dialog_ oder the _source-chosser-dialog_, all you haveto to ist create your own version of these strings in you _strings.xml_:
+If you want to customize the text that is shown at the _permission-explanation-dialog_ or the _source-chosser-dialog_, all you havevto to is create your own version of these strings in your projects _strings.xml_:
 
 | String ID  | Default value |
 | ------------ | ------------ |
