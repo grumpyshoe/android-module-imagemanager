@@ -2,10 +2,10 @@
 # Imagemanager
 
 ![AndroidStudio 3.3.2](https://img.shields.io/badge/Android_Studio-3.3.2-brightgreen.svg)
-![minSDK 16](https://img.shields.io/badge/minSDK-API_16-orange.svg?style=flat)
-  ![targetSDK 27](https://img.shields.io/badge/targetSDK-API_27-blue.svg)
+![minSDK 19](https://img.shields.io/badge/minSDK-API_19-orange.svg?style=flat)
+  ![targetSDK 28](https://img.shields.io/badge/targetSDK-API_28-blue.svg)
 
-`Imagemanager` is a small wrapper for all the things that need to be done just to get a image from camera or gallery.
+`Imagemanager` is a small wrapper to avoid all the boilerplate code just to get a image from a camera or the gallery.
 
 ## Installation
 
@@ -20,7 +20,7 @@ allprojects {
 }
 ```
 
-Add this dependency to your app _build.gradle_ and apply the plugin at the bottom:
+Add this dependency to your app _build.gradle_:
 ```gradle
 implementation 'com.github.grumpyshoe:android-module-imagemanager:1.0.0'
 ```
@@ -51,11 +51,30 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 }
 ```
 
+## Customize
+
+If you want your own text at the _permission-explanation-dialog_ oder the _source-chosser-dialog_, all you haveto to ist create your own version of these strings in you _strings.xml_:
+
+| String ID  | Default value |
+| ------------ | ------------ |
+| imagemanager_source_chooser_dialog_title | Choose image source |
+| imagemanager_add_image_from_camera_dialog_title | Create new image |
+| imagemanager_add_image_from_gallery_dialog_title | Add from gallery |
+| imagemanager_camera_permission_explanation_title | Camera Permission |
+| imagemanager_camera_permission_explanation_message | The App needs the Camera Permission to be able to create new images |
+| imagemanager_camera_permission_explanation_retry_title | Camera Permission |
+| imagemanager_camera_permission_explanation_retry_message | Without this permission you will not be able to get new images from your camera. |
+| imagemanager_gallery_permission_explanation_title | External Storage Permission |
+| imagemanager_gallery_permission_explanation_message | The App needs access to your external storage to be able to show your images. |
+| imagemanager_gallery_permission_explanation_retry_title | External Storage Permission |
+| imagemanager_gallery_permission_explanation_retry_message | Without this permission you will not be able to get new images from your gallery. |
+
 
 ### Dependencies
 | Package  | Version  |
 | ------------ | ------------ |
 | com.github.grumpyshoe:android-module-permissionmanager  | 1.2.0  |
+| com.github.grumpyshoe:android-module-intentutils | 1.1.0  |
 
 
 ## Need Help or something missing?

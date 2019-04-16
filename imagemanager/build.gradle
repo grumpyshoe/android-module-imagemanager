@@ -32,6 +32,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.permission_manager
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libs.intent_utils
     testImplementation libs.junit
     androidTestImplementation libs.support_test_runner
     androidTestImplementation libs.espresso_core

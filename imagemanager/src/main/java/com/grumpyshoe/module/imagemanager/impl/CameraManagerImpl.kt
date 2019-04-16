@@ -9,7 +9,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 import java.io.File
@@ -36,12 +38,12 @@ class CameraManagerImpl(val permissionManager: PermissionManager) :
                 triggerCamera(activity)
             },
             permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = "Camera Permission",
-                message = "The App needs the Camera Permission to be able to create new images."
+                title = activity.getString(R.string.imagemanager_camera_permission_explanation_title),
+                message = activity.getString(R.string.imagemanager_camera_permission_explanation_message)
             ),
             permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = "Retry Custom Permission Hint",
-                message = "You denied the permissions previously but this permissions are needed because ..."
+                title = activity.getString(R.string.imagemanager_camera_permission_explanation_retry_title),
+                message = activity.getString(R.string.imagemanager_camera_permission_explanation_retry_message)
             ),
             requestCode = ImageManager.ImageSources.CAMERA.permissionRequestCode
         )
@@ -85,7 +87,7 @@ class CameraManagerImpl(val permissionManager: PermissionManager) :
         }
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
-        activity.startActivityForResult(intent, ImageManager.ImageSources.CAMERA.dataRequestCode)
+        intent.openForResult(activity, ImageManager.ImageSources.CAMERA.dataRequestCode)
     }
 
 

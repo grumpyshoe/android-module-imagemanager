@@ -58,7 +58,8 @@ allprojects {
                 material           : ('com.google.android.material:material:1.0.0'),
 
                 // other
-                permission_manager : ('com.github.grumpyshoe:android-module-permissionmanager:1.2.0')
+                permission_manager : ('com.github.grumpyshoe:android-module-permissionmanager:1.2.0'),
+                intent_utils       : ('com.github.grumpyshoe:android-module-intentutils:1.1.0')
         ]
     }
 }

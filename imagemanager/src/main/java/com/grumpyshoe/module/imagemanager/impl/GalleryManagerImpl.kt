@@ -8,7 +8,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.intentutils.open
+import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 
@@ -34,12 +37,12 @@ class GalleryManagerImpl(val permissionManager: PermissionManager) :
                 triggerGallery(activity)
             },
             permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = "Camera Permission",
-                message = "The App needs the Camera Permission to be able to create new images."
+                title = activity.getString(R.string.imagemanager_gallery_permission_explanation_title),
+                message = activity.getString(R.string.imagemanager_gallery_permission_explanation_message)
             ),
             permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = "Retry Custom Permission Hint",
-                message = "You denied the permissions previously but this permissions are needed because ..."
+                title = activity.getString(R.string.imagemanager_gallery_permission_explanation_retry_title),
+                message = activity.getString(R.string.imagemanager_gallery_permission_explanation_retry_message)
             ),
             requestCode = ImageManager.ImageSources.GALLERY.permissionRequestCode
         )
@@ -58,7 +61,8 @@ class GalleryManagerImpl(val permissionManager: PermissionManager) :
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_PICK
-        activity.startActivityForResult(Intent.createChooser(intent, "Select File"), ImageManager.ImageSources.GALLERY.dataRequestCode)
+
+        intent.openForResult(activity, ImageManager.ImageSources.GALLERY.dataRequestCode)
     }
 
 
