@@ -1,6 +1,7 @@
 package com.grumpyshoe.imagemanager.sample
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
                 onImageReceived = {
                     Log.d("Main", "Camera Image loaded")
                     imageview.setImageBitmap(it)
+
+                    // example of how to convert image into base64
+                    val b64 = imageManager.imageConverter.toBase64(it, Bitmap.CompressFormat.JPEG, 100)
                 })
         }
     }

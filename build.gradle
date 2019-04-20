@@ -37,7 +37,7 @@ allprojects {
         targetSdk = 27
         buildNumber = 20
         appVersionCode = 1
-        appVersionName = "1.0.0"
+        appVersionName = "1.1.0"
 
         // libraries
         libs = [

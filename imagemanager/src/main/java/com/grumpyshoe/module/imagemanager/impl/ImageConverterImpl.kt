@@ -15,7 +15,7 @@ class ImageConverterImpl : ImageManager.ImageConverter {
      * return value without any size checks
      *
      * @param filePath
-     * @return
+     * @return base64 string
      */
     override fun toBase64(filePath: String): String {
 
@@ -26,6 +26,24 @@ class ImageConverterImpl : ImageManager.ImageConverter {
         // convert byte array to base64 encoded string
         return Base64.encodeToString(b, Base64.NO_WRAP)
 
+    }
+
+
+    /**
+     * return value without any size checks
+     *
+     * @param bitmap
+     * @param compressFormat
+     * @param quality
+     * @return base 64 string
+     */
+    override fun toBase64(bitmap: Bitmap, compressFormat: Bitmap.CompressFormat, quality: Int): String {
+
+        val byteArrayBitmapStream = ByteArrayOutputStream()
+        bitmap.compress(compressFormat, quality, byteArrayBitmapStream)
+        val b = byteArrayBitmapStream.toByteArray()
+        val b64 = Base64.encodeToString(b, Base64.NO_WRAP)
+        return b64
     }
 
 

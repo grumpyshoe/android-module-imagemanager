@@ -39,6 +39,7 @@ interface ImageManager {
     }
     interface ImageConverter {
         fun toBase64(filePath: String): String
+        fun toBase64(bitmap: Bitmap, compressFormat: Bitmap.CompressFormat, quality:Int): String
     }
 
 }
