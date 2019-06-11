@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
      *
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!imageManager.onActivityResult(applicationContext, requestCode, resultCode, data)) {
+        if (!imageManager.onActivityResult(this, requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }

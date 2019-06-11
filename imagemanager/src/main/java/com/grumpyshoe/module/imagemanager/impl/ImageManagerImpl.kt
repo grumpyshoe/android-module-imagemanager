@@ -1,7 +1,6 @@
 package com.grumpyshoe.module.imagemanager.impl
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
 import com.grumpyshoe.module.permissionmanager.PermissionManager
@@ -159,13 +157,20 @@ class ImageManagerImpl : ImageManager {
      *
      * @return flag if the result has been handeld
      */
-    override fun onActivityResult(context: Context, requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
+    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
 
         if (resultCode == Activity.RESULT_OK) {
 
             if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode && intent != null) {
 
-                return cameraManager.onIntentResult(context) {
+                return cameraManager.onIntentResult(activity, false) {
+                    onImageReceived(it)
+                }
+
+            }
+            if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode + 1) {
+
+                return cameraManager.onIntentResult(activity, true) {
                     onImageReceived(it)
                 }
 
