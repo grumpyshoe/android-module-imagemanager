@@ -9,8 +9,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import androidx.core.content.FileProvider
-import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
@@ -18,7 +19,8 @@ import java.io.File
 import java.io.IOException
 
 
-class CameraManagerImpl(val permissionManager: PermissionManager) : ImageManager.CameraManager {
+class CameraManagerImpl(private val permissionManager: PermissionManager) :
+    ImageManager.CameraManager {
 
     private var cameraImageUri: Uri? = null
     private lateinit var filePath: String
@@ -39,12 +41,12 @@ class CameraManagerImpl(val permissionManager: PermissionManager) : ImageManager
                 triggerCamera(activity)
             },
             permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = activity.getString(R.string.imagemanager_camera_permission_explanation_title),
-                message = activity.getString(R.string.imagemanager_camera_permission_explanation_message)
+                title = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_TITLE),
+                message = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_MESSAGE)
             ),
             permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = activity.getString(R.string.imagemanager_camera_permission_explanation_retry_title),
-                message = activity.getString(R.string.imagemanager_camera_permission_explanation_retry_message)
+                title = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_RETRY_TITLE),
+                message = ImagemanagerConfig.texts.getValue(activity,CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE)
             ),
             requestCode = ImageManager.ImageSources.CAMERA.permissionRequestCode
         )
@@ -70,14 +72,19 @@ class CameraManagerImpl(val permissionManager: PermissionManager) : ImageManager
 
         val photoFile = File.createTempFile(CAMERA_IMAGE_NAME, ".jpg", activity.externalCacheDir)
         filePath = photoFile.absolutePath
-        cameraImageUri = FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
+        cameraImageUri =
+            FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
 
         val manufacturer = android.os.Build.MANUFACTURER
 
         val intent = Intent(ACTION_IMAGE_CAPTURE)
         val requestCode: Int
 
-        requestCode = if (manufacturer.equals("samsung", ignoreCase = true)) {
+        requestCode = if (manufacturer.equals("samsung", ignoreCase = true) || manufacturer.equals(
+                "huawei",
+                ignoreCase = true
+            )
+        ) {
             ImageManager.ImageSources.CAMERA.dataRequestCode + 1
         } else {
             ImageManager.ImageSources.CAMERA.dataRequestCode
@@ -108,14 +115,23 @@ class CameraManagerImpl(val permissionManager: PermissionManager) : ImageManager
      *
      * @return flag if the result has been handeld
      */
-    override fun onIntentResult(activity: Activity, isSamsung: Boolean, onResult: (Bitmap) -> Unit): Boolean {
+    override fun onIntentResult(
+        activity: Activity,
+        isSamsung: Boolean,
+        onResult: (Bitmap) -> Unit
+    ): Boolean {
 
         try {
 
             if (isSamsung) {
                 SamsungImageUtils.getImageFromSamsung(filePath)?.let(onResult)
             } else {
-                onResult(MediaStore.Images.Media.getBitmap(activity.contentResolver, cameraImageUri))
+                onResult(
+                    MediaStore.Images.Media.getBitmap(
+                        activity.contentResolver,
+                        cameraImageUri
+                    )
+                )
             }
 
             return true

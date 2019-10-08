@@ -1,17 +1,21 @@
 package com.grumpyshoe.module.imagemanager.impl
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
-import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.impl.PermissionManagerImpl
+import java.io.*
 
 
 class ImageManagerImpl : ImageManager {
@@ -45,18 +49,18 @@ class ImageManagerImpl : ImageManager {
         if (sources.size == 1) {
 
             // choose object from source directly
-            if (sources[0].equals(ImageManager.ImageSources.CAMERA)) {
-                requestCodeTrigger = cameraManager.selectImageFromCamera(activity)
+            requestCodeTrigger = if (sources[0].equals(ImageManager.ImageSources.CAMERA)) {
+                cameraManager.selectImageFromCamera(activity)
             } else {
-                requestCodeTrigger = galleryManager.selectImageFromGallery(activity)
+                galleryManager.selectImageFromGallery(activity)
             }
         } else {
 
             // start dialog to select source
             showSourceChooserDialog(
-                dialogTitle = activity.getString(R.string.imagemanager_source_chooser_dialog_title),
-                takePhotoTitle = activity.getString(R.string.imagemanager_add_image_from_camera_dialog_title),
-                getImageFromGallerytitle = activity.getString(R.string.imagemanager_add_image_from_gallery_dialog_title)
+                dialogTitle = ImagemanagerConfig.texts.getValue(activity, SOURCE_CHOOSER_DIALOG_TITLE),
+                takePhotoTitle = ImagemanagerConfig.texts.getValue(activity, ADD_IMAGE_FROM_CAMERA_DIALOG_TITLE),
+                getImageFromGallerytitle = ImagemanagerConfig.texts.getValue(activity, ADD_IMAGE_FROM_GALLERY_DIALOG_TITLE)
             )
         }
 
@@ -86,10 +90,10 @@ class ImageManagerImpl : ImageManager {
         val builder = AlertDialog.Builder(mCurrectActivity)
         builder.setTitle(dialogTitle)
         builder.setItems(items) { dialog, index ->
-            if (items[index] == takePhotoTitle) {
-                requestCodeTrigger = cameraManager.selectImageFromCamera(mCurrectActivity)
+            requestCodeTrigger = if (items[index] == takePhotoTitle) {
+                cameraManager.selectImageFromCamera(mCurrectActivity)
             } else {
-                requestCodeTrigger = galleryManager.selectImageFromGallery(mCurrectActivity)
+                galleryManager.selectImageFromGallery(mCurrectActivity)
             }
         }
         builder.setNegativeButton("Abbrechen", null)
@@ -157,7 +161,12 @@ class ImageManagerImpl : ImageManager {
      *
      * @return flag if the result has been handeld
      */
-    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
+    override fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        resultCode: Int,
+        intent: Intent?
+    ): Boolean {
 
         if (resultCode == Activity.RESULT_OK) {
 
@@ -182,5 +191,44 @@ class ImageManagerImpl : ImageManager {
         }
 
         return false
+    }
+
+    /**
+     * write image to storage and return path
+     *
+     */
+    override fun saveImage(
+        context: Context,
+        bitmap: Bitmap,
+        filename: String,
+        path: String,
+        compressFormat: Bitmap.CompressFormat,
+        compressQuality: Int
+    ) {
+
+        var outputStream: FileOutputStream? = null
+        val stream = ByteArrayOutputStream()
+        try {
+
+            bitmap.compress(compressFormat, compressQuality, stream)
+
+            val folder = context.filesDir.absolutePath + File.separator + path
+
+            val subFolder = File(folder)
+
+            if (!subFolder.exists()) {
+                subFolder.mkdirs()
+            }
+
+            outputStream = FileOutputStream(File(subFolder, filename))
+            outputStream.write(stream.toByteArray())
+
+        } catch (e: FileNotFoundException) {
+            Log.e(javaClass.simpleName, e.toString())
+        } catch (e: IOException) {
+            Log.e(javaClass.simpleName, e.toString())
+        } finally {
+            outputStream?.close()
+        }
     }
 }

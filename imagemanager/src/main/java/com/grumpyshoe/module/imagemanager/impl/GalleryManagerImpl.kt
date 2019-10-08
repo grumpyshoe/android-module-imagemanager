@@ -8,14 +8,16 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import com.grumpyshoe.getimage.R
 import com.grumpyshoe.module.imagemanager.ImageManager
-import com.grumpyshoe.module.intentutils.open
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 
-class GalleryManagerImpl(val permissionManager: PermissionManager) :
+class GalleryManagerImpl(
+    private val permissionManager: PermissionManager
+) :
     ImageManager.GalleryManager {
 
     private val LOG_TAG = "ImageManagerImpl"
@@ -28,7 +30,7 @@ class GalleryManagerImpl(val permissionManager: PermissionManager) :
      * @param activity - activity source
      *
      */
-    override fun selectImageFromGallery(activity: Activity):Int {
+    override fun selectImageFromGallery(activity: Activity): Int {
 
         permissionManager.checkPermissions(
             activity = activity,
@@ -37,12 +39,12 @@ class GalleryManagerImpl(val permissionManager: PermissionManager) :
                 triggerGallery(activity)
             },
             permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = activity.getString(R.string.imagemanager_gallery_permission_explanation_title),
-                message = activity.getString(R.string.imagemanager_gallery_permission_explanation_message)
+                title = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_TITLE),
+                message = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_MESSAGE)
             ),
             permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = activity.getString(R.string.imagemanager_gallery_permission_explanation_retry_title),
-                message = activity.getString(R.string.imagemanager_gallery_permission_explanation_retry_message)
+                title = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_RETRY_TITLE),
+                message = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_RETRY_MESSAGE)
             ),
             requestCode = ImageManager.ImageSources.GALLERY.permissionRequestCode
         )

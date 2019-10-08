@@ -26,6 +26,14 @@ interface ImageManager {
     fun getMimeType(imagePath: String): String?
     fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, intent: Intent?): Boolean
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray): Boolean
+    fun saveImage(
+        context: Context,
+        bitmap: Bitmap,
+        filename: String,
+        path: String,
+        compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+        compressQuality: Int = 100
+    )
 
     interface CameraManager {
         fun selectImageFromCamera(activity: Activity): Int

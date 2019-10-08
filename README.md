@@ -1,9 +1,9 @@
 
 # Imagemanager
 
-![AndroidStudio 3.3.2](https://img.shields.io/badge/Android_Studio-3.3.2-brightgreen.svg)
+![AndroidStudio 3.5](https://img.shields.io/badge/Android_Studio-3.5-brightgreen.svg)
 ![minSDK 19](https://img.shields.io/badge/minSDK-API_19-orange.svg?style=flat)
-  ![targetSDK 28](https://img.shields.io/badge/targetSDK-API_28-blue.svg)
+![targetSDK 28](https://img.shields.io/badge/targetSDK-API_28-blue.svg)
 
 `Imagemanager` is a small wrapper to avoid all the boilerplate code just to get a image from a camera or the gallery.
 
@@ -22,7 +22,7 @@ allprojects {
 
 Add this dependency to your app _build.gradle_:
 ```gradle
-implementation 'com.github.grumpyshoe:android-module-imagemanager:1.1.1'
+implementation 'com.github.grumpyshoe:android-module-imagemanager:1.2.0'
 ```
 
 ## Usage
@@ -53,7 +53,9 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 ## Customize
 
-If you want to customize the text that is shown at the _permission-explanation-dialog_ or the _source-chosser-dialog_, all you havevto to is create your own version of these strings in your projects _strings.xml_:
+If you want to customize the text that is shown at the _permission-explanation-dialog_ or the _source-chosser-dialog_ there're two option how that can be done:
+
+1. Create your own version of these strings in your projects _strings.xml_:
 
 | String ID  | Default value |
 | ------------ | ------------ |
@@ -68,6 +70,18 @@ If you want to customize the text that is shown at the _permission-explanation-d
 | imagemanager_gallery_permission_explanation_message | The App needs access to your external storage to be able to show your images. |
 | imagemanager_gallery_permission_explanation_retry_title | External Storage Permission |
 | imagemanager_gallery_permission_explanation_retry_message | Without this permission you will not be able to get new images from your gallery. |
+
+2. Overwrite config (example at MainActivity):
+
+You don't have  to override all texts, just the one you want.
+```kotlin
+val config = ImagemanagerConfig
+config.texts = ImagemanagerConfig.Texts(
+    imagemanager_source_chooser_dialog_title = "My Custom Chooser Title",
+    imagemanager_add_image_from_camera_dialog_title = "Use My Camera"
+)
+```
+
 
 
 ### Dependencies
@@ -89,9 +103,9 @@ This project is licensed under the terms of the MIT license. See the [LICENSE](L
 
 #### Build Environment
 ```
-Android Studio 3.3.2
-Build #AI-182.5107.16.33.5314842, built on February 16, 2019
-JRE: 1.8.0_152-release-1248-b01 x86_64
+Android Studio 3.5
+Build #AI-191.8026.42.35.5791312, built on August 9, 2019
+JRE: 1.8.0_202-release-1483-b49-5587405 x86_64
 JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
-macOS 10.14
+macOS 10.14.4
 ```
