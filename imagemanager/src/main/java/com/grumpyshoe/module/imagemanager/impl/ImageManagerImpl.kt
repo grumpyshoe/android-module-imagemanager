@@ -132,11 +132,6 @@ class ImageManagerImpl : ImageManager {
                 galleryManager.triggerGallery(mCurrectActivity)
             }
             true
-        }else if (requestCode == ImageManager.ImageSources.EXTERNAL_DATA.permissionRequestCode && requestCodeTrigger == ImageManager.ImageSources.EXTERNAL_DATA.permissionRequestCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                galleryManager.triggerGallery(mCurrectActivity)
-            }
-            true
         } else {
             false
         }
