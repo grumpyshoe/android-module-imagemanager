@@ -2,6 +2,14 @@
 
 # Changelog
 
+## 1.3.3
+
+### Features
+* Added option to delete images from disk
+
+### Bugfixes
+* fix path for loading image from disk
+
 ## 1.3.2
 
 ### Bugfixes

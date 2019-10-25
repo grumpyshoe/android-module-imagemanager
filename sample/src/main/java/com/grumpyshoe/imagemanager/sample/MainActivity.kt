@@ -41,23 +41,29 @@ class MainActivity : AppCompatActivity() {
                     Log.d("Main", "Camera Image loaded")
                     imageview.setImageBitmap(it)
 
-//                    // example of how to save a bitmap as an image to disk
-//                    val path = imageManager.saveImage(
-//                        context = this,
-//                        bitmap = it,
-//                        filename = "compression_jpg_80.jpg",
-//                        path = "myPath",
-//                        compressFormat = Bitmap.CompressFormat.JPEG,
-//                        compressQuality = 80)
-//
+                    // example of how to save a bitmap as an image to disk
+                    val path = imageManager.saveImage(
+                        context = this,
+                        bitmap = it,
+                        filename = "compression_jpg_80.jpg",
+                        path = "myPath",
+                        compressFormat = Bitmap.CompressFormat.JPEG,
+                        compressQuality = 80)
+
 //                    // example of how to load a image from disk
 //                    val f = File(path)
 //                    imageManager.loadImagefromDisk(
-//                        activity = this,
+//                        context = this,
 //                        filename = f.name,
-//                        path = f.parent)?.let { bitmap ->
+//                        path = f.parentFile.name)?.let { bitmap ->
 //                        imageview.setImageBitmap(bitmap)
 //                    }
+//
+//                    val deleted = imageManager.deleteImageFromDisk(
+//                        context = this,
+//                        filename = f.name,
+//                        path = f.parentFile.name)
+//                    Log.d("ImageManager", "Deletion of '${f.absolutePath}' successful: $deleted")
 
                     // example of how to convert a image into base64
                     //val b64 = imageManager.imageConverter.toBase64(it, Bitmap.CompressFormat.JPEG, 100)

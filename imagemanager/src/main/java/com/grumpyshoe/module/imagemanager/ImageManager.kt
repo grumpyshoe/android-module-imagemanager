@@ -24,8 +24,20 @@ interface ImageManager {
     )
 
     fun getMimeType(imagePath: String): String?
-    fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, intent: Intent?): Boolean
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray): Boolean
+
+    fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        resultCode: Int,
+        intent: Intent?
+    ): Boolean
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean
+
     fun saveImage(
         context: Context,
         bitmap: Bitmap,
@@ -34,14 +46,27 @@ interface ImageManager {
         compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
         compressQuality: Int = 100
     ): String?
+
     fun loadImagefromDisk(
+        context: Context,
         filename: String,
-        path: String) : Bitmap?
+        path: String
+    ): Bitmap?
+
+    fun deleteImageFromDisk(
+        context: Context,
+        filename: String,
+        path: String
+    ): Boolean
 
     interface CameraManager {
         fun selectImageFromCamera(activity: Activity): Int
         fun triggerCamera(activity: Activity)
-        fun onIntentResult(activity: Activity, isSamsung: Boolean, onResult: (Bitmap) -> Unit): Boolean
+        fun onIntentResult(
+            activity: Activity,
+            isSamsung: Boolean,
+            onResult: (Bitmap) -> Unit
+        ): Boolean
     }
 
     interface GalleryManager {

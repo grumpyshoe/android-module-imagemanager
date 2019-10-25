@@ -243,9 +243,9 @@ class ImageManagerImpl : ImageManager {
      * load image from storage and return bitmap
      *
      */
-    override fun loadImagefromDisk(filename: String, path: String): Bitmap? {
+    override fun loadImagefromDisk(context:Context, filename: String, path: String): Bitmap? {
 
-        val filePath = File(path, filename).absolutePath
+        val filePath = File(context.filesDir.absolutePath + File.separator + path, filename).absolutePath
         try {
            return BitmapFactory.decodeFile(filePath)
         }
@@ -253,5 +253,14 @@ class ImageManagerImpl : ImageManager {
             Log.e("ImageManager", e.message, e)
         }
         return null
+    }
+
+    /**
+     * delete file from
+     *
+     */
+    override fun deleteImageFromDisk(context:Context, filename: String, path: String): Boolean {
+
+       return  File(context.filesDir.absolutePath + File.separator + path, filename).delete()
     }
 }
