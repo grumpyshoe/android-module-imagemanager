@@ -243,7 +243,7 @@ class ImageManagerImpl : ImageManager {
      * load image from storage and return bitmap
      *
      */
-    override fun loadImagefromDisk(activity: Activity, filename: String, path: String): Bitmap? {
+    override fun loadImagefromDisk(filename: String, path: String): Bitmap? {
 
         val filePath = File(path, filename).absolutePath
         try {

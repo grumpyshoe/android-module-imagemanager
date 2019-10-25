@@ -35,7 +35,6 @@ interface ImageManager {
         compressQuality: Int = 100
     ): String?
     fun loadImagefromDisk(
-        activity: Activity,
         filename: String,
         path: String) : Bitmap?
 
