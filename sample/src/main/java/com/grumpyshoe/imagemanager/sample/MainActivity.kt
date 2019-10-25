@@ -7,9 +7,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.grumpyshoe.imagemanager.R
 import com.grumpyshoe.module.imagemanager.ImageManager
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
 import com.grumpyshoe.module.imagemanager.impl.ImageManagerImpl
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,16 +41,25 @@ class MainActivity : AppCompatActivity() {
                     Log.d("Main", "Camera Image loaded")
                     imageview.setImageBitmap(it)
 
-//                    // example on how to save bitmap as image to disk
-//                    imageManager.saveImage(
+//                    // example of how to save a bitmap as an image to disk
+//                    val path = imageManager.saveImage(
 //                        context = this,
 //                        bitmap = it,
 //                        filename = "compression_jpg_80.jpg",
-//                        path = this.cacheDir.absolutePath,
+//                        path = "myPath",
 //                        compressFormat = Bitmap.CompressFormat.JPEG,
 //                        compressQuality = 80)
+//
+//                    // example of how to load a image from disk
+//                    val f = File(path)
+//                    imageManager.loadImagefromDisk(
+//                        activity = this,
+//                        filename = f.name,
+//                        path = f.parent)?.let { bitmap ->
+//                        imageview.setImageBitmap(bitmap)
+//                    }
 
-                    // example of how to convert image into base64
+                    // example of how to convert a image into base64
                     //val b64 = imageManager.imageConverter.toBase64(it, Bitmap.CompressFormat.JPEG, 100)
                 })
         }

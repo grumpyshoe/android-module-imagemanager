@@ -96,6 +96,10 @@ config.texts = ImagemanagerConfig.Texts(
 Please [submit an issue](https://github.com/grumpyshoe/android-module-imagemanager/issues) on GitHub.
 
 
+## Changelog
+
+See [CHANGELOG](CHANGELOG.md) for morre information.
+
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file.

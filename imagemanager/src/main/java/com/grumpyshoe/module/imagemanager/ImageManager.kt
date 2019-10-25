@@ -33,7 +33,11 @@ interface ImageManager {
         path: String,
         compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
         compressQuality: Int = 100
-    )
+    ): String?
+    fun loadImagefromDisk(
+        activity: Activity,
+        filename: String,
+        path: String) : Bitmap?
 
     interface CameraManager {
         fun selectImageFromCamera(activity: Activity): Int

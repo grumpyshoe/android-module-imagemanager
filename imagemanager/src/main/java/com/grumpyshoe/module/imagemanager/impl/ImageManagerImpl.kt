@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -19,6 +20,7 @@ import java.io.*
 
 
 class ImageManagerImpl : ImageManager {
+
 
     val permissionManager: PermissionManager = PermissionManagerImpl
     override var cameraManager: ImageManager.CameraManager =
@@ -130,6 +132,11 @@ class ImageManagerImpl : ImageManager {
                 galleryManager.triggerGallery(mCurrectActivity)
             }
             true
+        }else if (requestCode == ImageManager.ImageSources.EXTERNAL_DATA.permissionRequestCode && requestCodeTrigger == ImageManager.ImageSources.EXTERNAL_DATA.permissionRequestCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                galleryManager.triggerGallery(mCurrectActivity)
+            }
+            true
         } else {
             false
         }
@@ -204,7 +211,7 @@ class ImageManagerImpl : ImageManager {
         path: String,
         compressFormat: Bitmap.CompressFormat,
         compressQuality: Int
-    ) {
+    ): String? {
 
         var outputStream: FileOutputStream? = null
         val stream = ByteArrayOutputStream()
@@ -220,8 +227,11 @@ class ImageManagerImpl : ImageManager {
                 subFolder.mkdirs()
             }
 
-            outputStream = FileOutputStream(File(subFolder, filename))
+            val finalFile = File(subFolder, filename)
+            outputStream = FileOutputStream(finalFile)
             outputStream.write(stream.toByteArray())
+
+            return finalFile.absolutePath
 
         } catch (e: FileNotFoundException) {
             Log.e(javaClass.simpleName, e.toString())
@@ -230,5 +240,23 @@ class ImageManagerImpl : ImageManager {
         } finally {
             outputStream?.close()
         }
+
+        return null
+    }
+
+    /**
+     * load image from storage and return bitmap
+     *
+     */
+    override fun loadImagefromDisk(activity: Activity, filename: String, path: String): Bitmap? {
+
+        val filePath = File(path, filename).absolutePath
+        try {
+           return BitmapFactory.decodeFile(filePath)
+        }
+        catch (e:Exception){
+            Log.e("ImageManager", e.message, e)
+        }
+        return null
     }
 }
