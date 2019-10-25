@@ -2,6 +2,11 @@
 
 # Changelog
 
+## 1.3.2
+
+### Bugfixes
+* Just another commit because otherwise Jitpack wouldn't recognize the changes ( dont ask me why ;) )
+
 ## 1.3.1
 
 ### Bugfixes
