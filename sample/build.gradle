@@ -28,8 +28,5 @@ dependencies {
     implementation libs.core_ktx
     implementation libs.material
     implementation libs.constraint_layout
-    testImplementation libs.junit
-    androidTestImplementation libs.support_test_runner
-    androidTestImplementation libs.espresso_core
     implementation project(':imagemanager')
 }
