@@ -5,13 +5,20 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import androidx.core.content.FileProvider
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
 import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_MESSAGE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_RETRY_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_TITLE
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
@@ -19,6 +26,13 @@ import java.io.File
 import java.io.IOException
 
 
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 class CameraManagerImpl(private val permissionManager: PermissionManager) :
     ImageManager.CameraManager {
 
@@ -46,7 +60,7 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
             ),
             permissionRequestRetryExplanation = PermissionRequestExplanation(
                 title = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_RETRY_TITLE),
-                message = ImagemanagerConfig.texts.getValue(activity,CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE)
+                message = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE)
             ),
             requestCode = ImageManager.ImageSources.CAMERA.permissionRequestCode
         )
@@ -75,20 +89,9 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
         cameraImageUri =
             FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
 
-        val manufacturer = android.os.Build.MANUFACTURER
-
         val intent = Intent(ACTION_IMAGE_CAPTURE)
-        val requestCode: Int
 
-        requestCode = if (manufacturer.equals("samsung", ignoreCase = true) || manufacturer.equals(
-                "huawei",
-                ignoreCase = true
-            )
-        ) {
-            ImageManager.ImageSources.CAMERA.dataRequestCode + 1
-        } else {
-            ImageManager.ImageSources.CAMERA.dataRequestCode
-        }
+        val requestCode = ImageManager.ImageSources.CAMERA.dataRequestCode
 
         val resolvedIntentActivities =
             context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
@@ -117,19 +120,41 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
      */
     override fun onIntentResult(
         activity: Activity,
-        isSamsung: Boolean,
-        onResult: (Bitmap) -> Unit
+        uriOnly: Boolean,
+        onResult: (ImageObject) -> Unit
     ): Boolean {
 
         try {
-
-            if (isSamsung) {
-                SamsungImageUtils.getImageFromSamsung(filePath)?.let(onResult)
+            // if only the URI is requested return it
+            if (uriOnly) {
+                onResult(ImageObject(cameraImageUri))
             } else {
+
+                val bitmap = MediaStore.Images.Media.getBitmap(
+                    activity.contentResolver,
+                    cameraImageUri
+                )
+
+                // check reotiation
+                val input = activity.contentResolver.openInputStream(cameraImageUri);
+                val ei = if (Build.VERSION.SDK_INT > 23)
+                    ExifInterface(input);
+                else
+                    ExifInterface(cameraImageUri?.path);
+
+                val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+                val bmp = when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap!!, 90f);
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap!!, 180f);
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap!!, 270f);
+                    else -> bitmap
+                }
+
                 onResult(
-                    MediaStore.Images.Media.getBitmap(
-                        activity.contentResolver,
-                        cameraImageUri
+                    ImageObject(
+                        cameraImageUri,
+                        bmp
                     )
                 )
             }
@@ -142,6 +167,13 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
         return false
     }
 
+    private fun rotateImage(img: Bitmap, degree: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degree)
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
+    }
 
     companion object {
         private const val CAMERA_IMAGE_NAME = "photo"

@@ -3,18 +3,28 @@ package com.grumpyshoe.module.imagemanager.impl
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
 import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_MESSAGE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_RETRY_MESSAGE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_RETRY_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_TITLE
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 class GalleryManagerImpl(
     private val permissionManager: PermissionManager
 ) :
@@ -77,7 +87,7 @@ class GalleryManagerImpl(
      *
      * @return flag if the result has been handeld
      */
-    override fun onIntentResult(uri: Uri, activity: Activity, onResult: (Bitmap) -> Unit): Boolean {
+    override fun onIntentResult(uri: Uri, activity: Activity, onResult: (ImageObject) -> Unit): Boolean {
         try {
             val proj = arrayOf(MediaStore.Images.Media.DATA)
             val cursor =
@@ -96,7 +106,7 @@ class GalleryManagerImpl(
 
                 val bmOptions = BitmapFactory.Options()
                 val bitmap = BitmapFactory.decodeFile(s, bmOptions)
-                onResult(bitmap)
+                onResult(ImageObject(uri, bitmap))
 
                 return true
             }

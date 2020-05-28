@@ -12,13 +12,27 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
 import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.*
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.ADD_IMAGE_FROM_CAMERA_DIALOG_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.ADD_IMAGE_FROM_GALLERY_DIALOG_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.SOURCE_CHOOSER_DIALOG_TITLE
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.impl.PermissionManagerImpl
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 class ImageManagerImpl : ImageManager {
 
 
@@ -32,13 +46,15 @@ class ImageManagerImpl : ImageManager {
 
 
     private lateinit var mCurrectActivity: Activity
-    private lateinit var onImageReceived: (Bitmap) -> Unit
+    private lateinit var onImageReceived: (ImageObject) -> Unit
     private var requestCodeTrigger: Int = 0
+    private var uriOnly = false
 
     override fun getImage(
         activity: Activity,
         sources: List<ImageManager.ImageSources>,
-        onImageReceived: (Bitmap) -> Unit
+        onImageReceived: (ImageObject) -> Unit,
+        uriOnly: Boolean
     ) {
 
         if (sources.isEmpty()) {
@@ -46,6 +62,7 @@ class ImageManagerImpl : ImageManager {
         }
 
         this.onImageReceived = onImageReceived
+        this.uriOnly = uriOnly
         mCurrectActivity = activity
 
         if (sources.size == 1) {
@@ -174,17 +191,9 @@ class ImageManagerImpl : ImageManager {
 
             if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode && intent != null) {
 
-                return cameraManager.onIntentResult(activity, false) {
+                return cameraManager.onIntentResult(activity, uriOnly) {
                     onImageReceived(it)
                 }
-
-            }
-            if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode + 1) {
-
-                return cameraManager.onIntentResult(activity, true) {
-                    onImageReceived(it)
-                }
-
             } else if (requestCode == ImageManager.ImageSources.GALLERY.dataRequestCode && intent != null && intent.data != null) {
                 return galleryManager.onIntentResult(intent.data, mCurrectActivity) {
                     onImageReceived(it)
@@ -243,13 +252,12 @@ class ImageManagerImpl : ImageManager {
      * load image from storage and return bitmap
      *
      */
-    override fun loadImagefromDisk(context:Context, filename: String, path: String): Bitmap? {
+    override fun loadImagefromDisk(context: Context, filename: String, path: String): Bitmap? {
 
         val filePath = File(context.filesDir.absolutePath + File.separator + path, filename).absolutePath
         try {
-           return BitmapFactory.decodeFile(filePath)
-        }
-        catch (e:Exception){
+            return BitmapFactory.decodeFile(filePath)
+        } catch (e: Exception) {
             Log.e("ImageManager", e.message, e)
         }
         return null
@@ -259,8 +267,8 @@ class ImageManagerImpl : ImageManager {
      * delete file from
      *
      */
-    override fun deleteImageFromDisk(context:Context, filename: String, path: String): Boolean {
+    override fun deleteImageFromDisk(context: Context, filename: String, path: String): Boolean {
 
-       return  File(context.filesDir.absolutePath + File.separator + path, filename).delete()
+        return File(context.filesDir.absolutePath + File.separator + path, filename).delete()
     }
 }

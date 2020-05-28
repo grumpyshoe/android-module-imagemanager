@@ -3,6 +3,13 @@ package com.grumpyshoe.module.imagemanager.impl.model
 import android.content.Context
 import com.grumpyshoe.getimage.R
 
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 object ImagemanagerConfig {
 
     var texts: Texts = Texts()

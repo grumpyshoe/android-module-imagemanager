@@ -12,7 +12,13 @@ import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
-
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 class MainActivity : AppCompatActivity() {
 
     val imageManager: ImageManager = ImageManagerImpl()
@@ -37,19 +43,20 @@ class MainActivity : AppCompatActivity() {
             imageManager.getImage(
                 activity = this,
                 sources = listOf(ImageManager.ImageSources.CAMERA, ImageManager.ImageSources.GALLERY),
+//                uriOnly = true, // uncomment this to retrieve only the uri of the image and no bitmap (default: false)
                 onImageReceived = {
                     Log.d("Main", "Camera Image loaded")
-                    imageview.setImageBitmap(it)
+                    imageview.setImageBitmap(it.bitmap!!)
 
-                    // example of how to save a bitmap as an image to disk
-                    val path = imageManager.saveImage(
-                        context = this,
-                        bitmap = it,
-                        filename = "compression_jpg_80.jpg",
-                        path = "myPath",
-                        compressFormat = Bitmap.CompressFormat.JPEG,
-                        compressQuality = 80)
-
+//                    // example of how to save a bitmap as an image to disk
+//                    val path = imageManager.saveImage(
+//                        context = this,
+//                        bitmap = it.bitmap!!,
+//                        filename = "compression_jpg_80.jpg",
+//                        path = "myPath",
+//                        compressFormat = Bitmap.CompressFormat.JPEG,
+//                        compressQuality = 80)
+//
 //                    // example of how to load a image from disk
 //                    val f = File(path)
 //                    imageManager.loadImagefromDisk(
@@ -64,9 +71,9 @@ class MainActivity : AppCompatActivity() {
 //                        filename = f.name,
 //                        path = f.parentFile.name)
 //                    Log.d("ImageManager", "Deletion of '${f.absolutePath}' successful: $deleted")
-
-                    // example of how to convert a image into base64
-                    //val b64 = imageManager.imageConverter.toBase64(it, Bitmap.CompressFormat.JPEG, 100)
+//
+//                    // example of how to convert a image into base64
+//                    val b64 = imageManager.imageConverter.toBase64(it.bitmap!!, Bitmap.CompressFormat.JPEG, 100)
                 })
         }
     }

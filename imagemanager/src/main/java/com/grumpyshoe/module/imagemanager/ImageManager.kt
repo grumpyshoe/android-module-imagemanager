@@ -5,7 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
 
+/*
+ * ImageObject
+ * android-module-imagemanager
+ *
+ * Created by Thomas Cirksena on 28.05.20.
+ * Copyright © 2020 Thomas Cirksena. All rights reserved.
+ */
 interface ImageManager {
 
     var cameraManager: CameraManager
@@ -20,7 +28,8 @@ interface ImageManager {
     fun getImage(
         activity: Activity,
         sources: List<ImageSources>,
-        onImageReceived: (Bitmap) -> Unit
+        onImageReceived: (ImageObject) -> Unit,
+        uriOnly: Boolean=false
     )
 
     fun getMimeType(imagePath: String): String?
@@ -64,15 +73,15 @@ interface ImageManager {
         fun triggerCamera(activity: Activity)
         fun onIntentResult(
             activity: Activity,
-            isSamsung: Boolean,
-            onResult: (Bitmap) -> Unit
+            uriOnly: Boolean,
+            onResult: (ImageObject) -> Unit
         ): Boolean
     }
 
     interface GalleryManager {
         fun selectImageFromGallery(activity: Activity): Int
         fun triggerGallery(activity: Activity)
-        fun onIntentResult(uri: Uri, activity: Activity, onResult: (Bitmap) -> Unit): Boolean
+        fun onIntentResult(uri: Uri, activity: Activity, onResult: (ImageObject) -> Unit): Boolean
     }
 
     interface ImageConverter {
