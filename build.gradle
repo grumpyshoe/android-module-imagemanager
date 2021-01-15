@@ -31,10 +31,10 @@ allprojects {
     ext {
 
         // base config
-        compileSdk = 30
+        compileSdk = 29
         buildTools = "30.0.3"
         minSdk = 19
-        targetSdk = 30
+        targetSdk = 29
         buildNumber = 21
         appVersionCode = 1
         appVersionName = "1.5.0"
