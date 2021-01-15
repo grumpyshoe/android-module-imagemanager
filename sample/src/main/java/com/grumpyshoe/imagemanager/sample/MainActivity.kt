@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.grumpyshoe.imagemanager.R
 import com.grumpyshoe.module.imagemanager.ImageManager
 import com.grumpyshoe.module.imagemanager.impl.ImageManagerImpl
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
+import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -27,15 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Here is a example how to add custom texts programmatically if ou don't want to override
-        // these in strings.xml.
-        // You don't need to override all texts, just the one you want.
-        val config = ImagemanagerConfig
-        config.texts = ImagemanagerConfig.Texts(
-            imagemanager_source_chooser_dialog_title = "My Custom Chooser Title",
-            imagemanager_add_image_from_camera_dialog_title = "Use My Camera"
-        )
-
         // add clicklistener to button
         button.setOnClickListener {
 
@@ -44,36 +35,52 @@ class MainActivity : AppCompatActivity() {
                 activity = this,
                 sources = listOf(ImageManager.ImageSources.CAMERA, ImageManager.ImageSources.GALLERY),
 //                uriOnly = true, // uncomment this to retrieve only the uri of the image and no bitmap (default: false)
+                cameraPermissionExplanation = PermissionExplanation(
+                    title = R.string.imagemanager_camera_permission_explanation_title,
+                    message = R.string.imagemanager_camera_permission_explanation_message
+                ),
+                cameraPermissionRetryExplanation = PermissionExplanation(
+                    title = R.string.imagemanager_camera_permission_explanation_retry_title,
+                    message = R.string.imagemanager_camera_permission_explanation_retry_message
+                ),
+                galleryPermissionRetryExplanation = PermissionExplanation(
+                    title = R.string.imagemanager_gallery_permission_explanation_title,
+                    message = R.string.imagemanager_gallery_permission_explanation_message
+                ),
+                galleryPermissionExplanation = PermissionExplanation(
+                    title = R.string.imagemanager_gallery_permission_explanation_retry_title,
+                    message = R.string.imagemanager_gallery_permission_explanation_retry_message
+                ),
                 onImageReceived = {
                     Log.d("Main", "Camera Image loaded")
                     imageview.setImageBitmap(it.bitmap!!)
 
 //                    // example of how to save a bitmap as an image to disk
-//                    val path = imageManager.saveImage(
-//                        context = this,
-//                        bitmap = it.bitmap!!,
-//                        filename = "compression_jpg_80.jpg",
-//                        path = "myPath",
-//                        compressFormat = Bitmap.CompressFormat.JPEG,
-//                        compressQuality = 80)
-//
-//                    // example of how to load a image from disk
-//                    val f = File(path)
-//                    imageManager.loadImagefromDisk(
-//                        context = this,
-//                        filename = f.name,
-//                        path = f.parentFile.name)?.let { bitmap ->
-//                        imageview.setImageBitmap(bitmap)
-//                    }
-//
-//                    val deleted = imageManager.deleteImageFromDisk(
-//                        context = this,
-//                        filename = f.name,
-//                        path = f.parentFile.name)
-//                    Log.d("ImageManager", "Deletion of '${f.absolutePath}' successful: $deleted")
-//
-//                    // example of how to convert a image into base64
-//                    val b64 = imageManager.imageConverter.toBase64(it.bitmap!!, Bitmap.CompressFormat.JPEG, 100)
+                    val path = imageManager.saveImage(
+                        context = this,
+                        bitmap = it.bitmap!!,
+                        filename = "compression_jpg_80.jpg",
+                        path = "myPath",
+                        compressFormat = Bitmap.CompressFormat.JPEG,
+                        compressQuality = 80)
+
+                    // example of how to load a image from disk
+                    val f = File(path)
+                    imageManager.loadImagefromDisk(
+                        context = this,
+                        filename = f.name,
+                        path = f.parentFile.name)?.let { bitmap ->
+                        imageview.setImageBitmap(bitmap)
+                    }
+
+                    val deleted = imageManager.deleteImageFromDisk(
+                        context = this,
+                        filename = f.name,
+                        path = f.parentFile.name)
+                    Log.d("ImageManager", "Deletion of '${f.absolutePath}' successful: $deleted")
+
+                    // example of how to convert a image into base64
+                    val b64 = imageManager.imageConverter.toBase64(it.bitmap!!, Bitmap.CompressFormat.JPEG, 100)
                 })
         }
     }

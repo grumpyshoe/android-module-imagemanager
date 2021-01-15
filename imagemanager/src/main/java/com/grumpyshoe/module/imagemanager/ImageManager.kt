@@ -6,6 +6,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
+import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
+import com.grumpyshoe.module.imagemanager.impl.model.SourceChooserDialogValues
+import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 
 /*
  * ImageObject
@@ -28,8 +31,13 @@ interface ImageManager {
     fun getImage(
         activity: Activity,
         sources: List<ImageSources>,
+        srcChooserDialog: SourceChooserDialogValues = SourceChooserDialogValues(),
+        cameraPermissionExplanation: PermissionExplanation? = null,
+        cameraPermissionRetryExplanation: PermissionExplanation? = null,
+        galleryPermissionExplanation: PermissionExplanation? = null,
+        galleryPermissionRetryExplanation: PermissionExplanation? = null,
         onImageReceived: (ImageObject) -> Unit,
-        uriOnly: Boolean=false
+        uriOnly: Boolean = false
     )
 
     fun getMimeType(imagePath: String): String?
@@ -69,7 +77,12 @@ interface ImageManager {
     ): Boolean
 
     interface CameraManager {
-        fun selectImageFromCamera(activity: Activity): Int
+        fun selectImageFromCamera(
+            activity: Activity,
+            permissionExplanation: PermissionExplanation?,
+            permissionRetryExplanation: PermissionExplanation?
+        ): Int
+
         fun triggerCamera(activity: Activity)
         fun onIntentResult(
             activity: Activity,
@@ -79,7 +92,12 @@ interface ImageManager {
     }
 
     interface GalleryManager {
-        fun selectImageFromGallery(activity: Activity): Int
+        fun selectImageFromGallery(
+            activity: Activity,
+            permissionExplanation: PermissionExplanation?,
+            permissionRetryExplanation: PermissionExplanation?
+        ): Int
+
         fun triggerGallery(activity: Activity)
         fun onIntentResult(uri: Uri, activity: Activity, onResult: (ImageObject) -> Unit): Boolean
     }

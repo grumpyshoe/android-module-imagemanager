@@ -1,7 +1,7 @@
 
 # Imagemanager
 
-![AndroidStudio 3.5](https://img.shields.io/badge/Android_Studio-3.5-brightgreen.svg)
+![AndroidStudio 4.1.1](https://img.shields.io/badge/Android_Studio-4.1.1-brightgreen.svg)
 ![minSDK 19](https://img.shields.io/badge/minSDK-API_19-orange.svg?style=flat)
 ![targetSDK 28](https://img.shields.io/badge/targetSDK-API_28-blue.svg)
 
@@ -22,7 +22,7 @@ allprojects {
 
 Add this dependency to your app _build.gradle_:
 ```gradle
-implementation 'com.github.grumpyshoe:android-module-imagemanager:1.4.0'
+implementation 'com.github.grumpyshoe:android-module-imagemanager:1.5.0'
 ```
 
 ## Usage
@@ -53,35 +53,8 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 ## Customize
 
-If you want to customize the text that is shown at the _permission-explanation-dialog_ or the _source-chosser-dialog_ there're two option how that can be done:
-
-1. Create your own version of these strings in your projects _strings.xml_:
-
-| String ID  | Default value |
-| ------------ | ------------ |
-| imagemanager_source_chooser_dialog_title | Choose image source |
-| imagemanager_add_image_from_camera_dialog_title | Create new image |
-| imagemanager_add_image_from_gallery_dialog_title | Add from gallery |
-| imagemanager_camera_permission_explanation_title | Camera Permission |
-| imagemanager_camera_permission_explanation_message | The App needs the Camera Permission to be able to create new images |
-| imagemanager_camera_permission_explanation_retry_title | Camera Permission |
-| imagemanager_camera_permission_explanation_retry_message | Without this permission you will not be able to get new images from your camera. |
-| imagemanager_gallery_permission_explanation_title | External Storage Permission |
-| imagemanager_gallery_permission_explanation_message | The App needs access to your external storage to be able to show your images. |
-| imagemanager_gallery_permission_explanation_retry_title | External Storage Permission |
-| imagemanager_gallery_permission_explanation_retry_message | Without this permission you will not be able to get new images from your gallery. |
-
-2. Overwrite config (example at MainActivity):
-
-You don't have  to override all texts, just the one you want.
-```kotlin
-val config = ImagemanagerConfig
-config.texts = ImagemanagerConfig.Texts(
-    imagemanager_source_chooser_dialog_title = "My Custom Chooser Title",
-    imagemanager_add_image_from_camera_dialog_title = "Use My Camera"
-)
-```
-
+If you want to customize the text that is shown at the _permission-explanation-dialog_ or the _source-chosser-dialog_ that an be done by adding the parameter `srcChooserDialog`, `cameraPermissionExplanation`, `cameraPermissionRetryExplanation`, `galleryPermissionRetryExplanation`and `galleryPermissionExplanation`.
+All of these fields are optional, see the sample app.
 
 
 ### Dependencies

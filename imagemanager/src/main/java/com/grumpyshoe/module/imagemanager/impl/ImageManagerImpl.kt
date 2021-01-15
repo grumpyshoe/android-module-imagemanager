@@ -13,12 +13,11 @@ import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import com.grumpyshoe.module.imagemanager.ImageManager
 import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.ADD_IMAGE_FROM_CAMERA_DIALOG_TITLE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.ADD_IMAGE_FROM_GALLERY_DIALOG_TITLE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.SOURCE_CHOOSER_DIALOG_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
+import com.grumpyshoe.module.imagemanager.impl.model.SourceChooserDialogValues
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.impl.PermissionManagerImpl
+import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
@@ -53,6 +52,11 @@ class ImageManagerImpl : ImageManager {
     override fun getImage(
         activity: Activity,
         sources: List<ImageManager.ImageSources>,
+        srcChooserDialog: SourceChooserDialogValues,
+        cameraPermissionExplanation: PermissionExplanation?,
+        cameraPermissionRetryExplanation: PermissionExplanation?,
+        galleryPermissionExplanation: PermissionExplanation?,
+        galleryPermissionRetryExplanation: PermissionExplanation?,
         onImageReceived: (ImageObject) -> Unit,
         uriOnly: Boolean
     ) {
@@ -69,17 +73,29 @@ class ImageManagerImpl : ImageManager {
 
             // choose object from source directly
             requestCodeTrigger = if (sources[0].equals(ImageManager.ImageSources.CAMERA)) {
-                cameraManager.selectImageFromCamera(activity)
+                cameraManager.selectImageFromCamera(
+                    activity = activity,
+                    permissionExplanation = cameraPermissionExplanation,
+                    permissionRetryExplanation = cameraPermissionRetryExplanation
+                )
             } else {
-                galleryManager.selectImageFromGallery(activity)
+                galleryManager.selectImageFromGallery(
+                    activity = activity,
+                    permissionExplanation = galleryPermissionExplanation,
+                    permissionRetryExplanation = galleryPermissionRetryExplanation
+                )
             }
         } else {
 
             // start dialog to select source
             showSourceChooserDialog(
-                dialogTitle = ImagemanagerConfig.texts.getValue(activity, SOURCE_CHOOSER_DIALOG_TITLE),
-                takePhotoTitle = ImagemanagerConfig.texts.getValue(activity, ADD_IMAGE_FROM_CAMERA_DIALOG_TITLE),
-                getImageFromGallerytitle = ImagemanagerConfig.texts.getValue(activity, ADD_IMAGE_FROM_GALLERY_DIALOG_TITLE)
+                dialogTitle = activity.getString(srcChooserDialog.dialogTitle),
+                takePhotoTitle = activity.getString(srcChooserDialog.takePhotoTitle),
+                getImageFromGallerytitle = activity.getString(srcChooserDialog.getImageFromGallerytitle),
+                cameraPermissionExplanation = cameraPermissionExplanation,
+                cameraPermissionRetryExplanation = cameraPermissionRetryExplanation,
+                galleryPermissionExplanation = galleryPermissionExplanation,
+                galleryPermissionRetryExplanation = galleryPermissionRetryExplanation
             )
         }
 
@@ -101,7 +117,11 @@ class ImageManagerImpl : ImageManager {
     fun showSourceChooserDialog(
         dialogTitle: String,
         takePhotoTitle: String,
-        getImageFromGallerytitle: String
+        getImageFromGallerytitle: String,
+        cameraPermissionExplanation: PermissionExplanation?,
+        cameraPermissionRetryExplanation: PermissionExplanation?,
+        galleryPermissionExplanation: PermissionExplanation?,
+        galleryPermissionRetryExplanation: PermissionExplanation?
     ) {
 
         val items = arrayOf<CharSequence>(takePhotoTitle, getImageFromGallerytitle)
@@ -110,9 +130,17 @@ class ImageManagerImpl : ImageManager {
         builder.setTitle(dialogTitle)
         builder.setItems(items) { dialog, index ->
             requestCodeTrigger = if (items[index] == takePhotoTitle) {
-                cameraManager.selectImageFromCamera(mCurrectActivity)
+                cameraManager.selectImageFromCamera(
+                    activity = mCurrectActivity,
+                    permissionExplanation = cameraPermissionExplanation,
+                    permissionRetryExplanation = cameraPermissionRetryExplanation
+                )
             } else {
-                galleryManager.selectImageFromGallery(mCurrectActivity)
+                galleryManager.selectImageFromGallery(
+                    activity = mCurrectActivity,
+                    permissionExplanation = galleryPermissionExplanation,
+                    permissionRetryExplanation = galleryPermissionRetryExplanation
+                )
             }
         }
         builder.setNegativeButton("Abbrechen", null)

@@ -9,11 +9,7 @@ import android.provider.MediaStore
 import android.util.Log
 import com.grumpyshoe.module.imagemanager.ImageManager
 import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_MESSAGE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_RETRY_MESSAGE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_RETRY_TITLE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.GALLERY_PERMISSION_EXPLANATION_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
@@ -40,7 +36,11 @@ class GalleryManagerImpl(
      * @param activity - activity source
      *
      */
-    override fun selectImageFromGallery(activity: Activity): Int {
+    override fun selectImageFromGallery(
+        activity: Activity,
+        permissionExplanation: PermissionExplanation?,
+        permissionRetryExplanation: PermissionExplanation?
+    ): Int {
 
         permissionManager.checkPermissions(
             activity = activity,
@@ -48,14 +48,18 @@ class GalleryManagerImpl(
             onPermissionResult = { permissionResult ->
                 triggerGallery(activity)
             },
-            permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_TITLE),
-                message = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_MESSAGE)
-            ),
-            permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_RETRY_TITLE),
-                message = ImagemanagerConfig.texts.getValue(activity, GALLERY_PERMISSION_EXPLANATION_RETRY_MESSAGE)
-            ),
+            permissionRequestPreExecuteExplanation = permissionExplanation?.let {
+                return@let PermissionRequestExplanation(
+                    title = activity.getString(it.title),
+                    message = activity.getString(it.message)
+                )
+            },
+            permissionRequestRetryExplanation = permissionRetryExplanation?.let {
+                return@let PermissionRequestExplanation(
+                    title = activity.getString(it.title),
+                    message = activity.getString(it.message)
+                )
+            },
             requestCode = ImageManager.ImageSources.GALLERY.permissionRequestCode
         )
 

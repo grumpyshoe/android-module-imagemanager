@@ -14,11 +14,7 @@ import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import androidx.core.content.FileProvider
 import com.grumpyshoe.module.imagemanager.ImageManager
 import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_MESSAGE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_RETRY_TITLE
-import com.grumpyshoe.module.imagemanager.impl.model.ImagemanagerConfig.Texts.TextKey.CAMERA_PERMISSION_EXPLANATION_TITLE
+import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
 import com.grumpyshoe.module.intentutils.openForResult
 import com.grumpyshoe.module.permissionmanager.PermissionManager
 import com.grumpyshoe.module.permissionmanager.model.PermissionRequestExplanation
@@ -46,7 +42,11 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
      * @param activity - activity source
      *
      */
-    override fun selectImageFromCamera(activity: Activity): Int {
+    override fun selectImageFromCamera(
+        activity: Activity,
+        permissionExplanation: PermissionExplanation?,
+        permissionRetryExplanation: PermissionExplanation?
+    ): Int {
 
         permissionManager.checkPermissions(
             activity = activity,
@@ -54,14 +54,18 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
             onPermissionResult = { permissionResult ->
                 triggerCamera(activity)
             },
-            permissionRequestPreExecuteExplanation = PermissionRequestExplanation(
-                title = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_TITLE),
-                message = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_MESSAGE)
-            ),
-            permissionRequestRetryExplanation = PermissionRequestExplanation(
-                title = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_RETRY_TITLE),
-                message = ImagemanagerConfig.texts.getValue(activity, CAMERA_PERMISSION_EXPLANATION_RETRY_MESSAGE)
-            ),
+            permissionRequestPreExecuteExplanation = permissionExplanation?.let {
+                return@let PermissionRequestExplanation(
+                    title = activity.getString(it.title),
+                    message = activity.getString(it.message)
+                )
+            },
+            permissionRequestRetryExplanation = permissionRetryExplanation?.let {
+                return@let PermissionRequestExplanation(
+                    title = activity.getString(it.title),
+                    message = activity.getString(it.message)
+                )
+            },
             requestCode = ImageManager.ImageSources.CAMERA.permissionRequestCode
         )
 
