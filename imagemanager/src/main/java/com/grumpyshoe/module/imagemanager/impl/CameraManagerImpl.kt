@@ -83,15 +83,15 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
 
         val context = activity.applicationContext
 
-        val previousFile = File(activity.externalCacheDir.toString() + CAMERA_IMAGE_NAME + ".jpg")
+        val previousFile = File(activity.externalCacheDir.toString() + CAMERA_IMAGE_NAME + ".png")
         if (previousFile.exists()) {
             previousFile.delete()
         }
 
-        val photoFile = File.createTempFile(CAMERA_IMAGE_NAME, ".jpg", activity.externalCacheDir)
+        val photoFile = File.createTempFile(CAMERA_IMAGE_NAME, ".png", activity.externalCacheDir)
         filePath = photoFile.absolutePath
-        cameraImageUri =
-            FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
+        cameraImageUri = FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
+
 
         val intent = Intent(ACTION_IMAGE_CAPTURE)
 

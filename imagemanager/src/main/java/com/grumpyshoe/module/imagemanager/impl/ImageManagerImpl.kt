@@ -217,7 +217,7 @@ class ImageManagerImpl : ImageManager {
 
         if (resultCode == Activity.RESULT_OK) {
 
-            if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode && intent != null) {
+            if (requestCode == ImageManager.ImageSources.CAMERA.dataRequestCode) {
 
                 return cameraManager.onIntentResult(activity, uriOnly) {
                     onImageReceived(it)
