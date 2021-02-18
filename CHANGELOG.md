@@ -2,7 +2,13 @@
 
 # Changelog
 
-## 1.5.0
+## 1.6.1
+
+### Bugfixes
+* fix fileprofider authorities to be unique and doesn't conflict other provider
+
+
+## 1.6.0
 
 ### BREAKING CHANGES
 * `ImagemanagerConfig` is not longer available. The String no can be set directly on image request via `srcChooserDialog`, `cameraPermissionExplanation`, `cameraPermissionRetryExplanation`, `galleryPermissionRetryExplanation`and `galleryPermissionExplanation`.

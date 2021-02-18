@@ -22,7 +22,7 @@ allprojects {
 
 Add this dependency to your app _build.gradle_:
 ```gradle
-implementation 'com.github.grumpyshoe:android-module-imagemanager:1.6.0'
+implementation 'com.github.grumpyshoe:android-module-imagemanager:1.6.1'
 ```
 
 ## Usage

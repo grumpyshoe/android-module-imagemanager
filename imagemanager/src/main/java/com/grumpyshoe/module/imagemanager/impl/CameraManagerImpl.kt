@@ -90,15 +90,15 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
 
         val photoFile = File.createTempFile(CAMERA_IMAGE_NAME, ".png", activity.externalCacheDir)
         filePath = photoFile.absolutePath
-        cameraImageUri = FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
+        cameraImageUri = FileProvider.getUriForFile(activity, activity.packageName + ".imagemanager_fileprovider", photoFile)
 
 
         val intent = Intent(ACTION_IMAGE_CAPTURE)
 
         val requestCode = ImageManager.ImageSources.CAMERA.dataRequestCode
 
-        val resolvedIntentActivities =
-            context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        val resolvedIntentActivities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+
         for (resolvedIntentInfo in resolvedIntentActivities) {
             val packageName = resolvedIntentInfo.activityInfo.packageName
 

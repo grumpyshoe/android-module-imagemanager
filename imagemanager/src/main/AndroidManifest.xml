@@ -8,10 +8,10 @@
     <application>
         <provider
                 android:name="androidx.core.content.FileProvider"
-                android:authorities="${applicationId}.fileprovider"
+                android:authorities="${applicationId}.imagemanager_fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true"
-                android:readPermission="${applicationId}.fileprovider.READ">
+                android:readPermission="${applicationId}.imagemanager_fileprovider.READ">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/external_files"/>
