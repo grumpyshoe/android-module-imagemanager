@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import androidx.core.content.FileProvider
 import com.grumpyshoe.module.imagemanager.ImageManager
+import com.grumpyshoe.module.imagemanager.ImageManagerFileProvider
 import com.grumpyshoe.module.imagemanager.impl.model.ImageObject
 import com.grumpyshoe.module.imagemanager.impl.model.PermissionExplanation
 import com.grumpyshoe.module.intentutils.openForResult
@@ -90,7 +91,7 @@ class CameraManagerImpl(private val permissionManager: PermissionManager) :
 
         val photoFile = File.createTempFile(CAMERA_IMAGE_NAME, ".png", activity.externalCacheDir)
         filePath = photoFile.absolutePath
-        cameraImageUri = FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", photoFile)
+        cameraImageUri = ImageManagerFileProvider.getUri(activity, "com.grumpyshoe.module.imagemanager.fileprovider", photoFile)
 
 
         val intent = Intent(ACTION_IMAGE_CAPTURE)

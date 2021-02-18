@@ -2,7 +2,7 @@
 
 # Changelog
 
-## 1.6.2
+## 1.6.3
 
 ### Bugfixes
 * create own fileprovider so it doesn't conflict other provider
