@@ -8,10 +8,10 @@
     <application>
         <provider
                 android:name="com.grumpyshoe.module.imagemanager.ImageManagerFileProvider"
-                android:authorities="com.grumpyshoe.module.imagemanager.fileprovider"
+                android:authorities="${applicationId}.imagemanager_fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true"
-                android:readPermission="com.grumpyshoe.module.imagemanager.fileprovider.READ">
+                android:readPermission="${applicationId}.imagemanager_fileprovider.READ">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/external_files"/>
