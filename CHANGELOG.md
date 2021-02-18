@@ -2,10 +2,10 @@
 
 # Changelog
 
-## 1.6.1
+## 1.6.2
 
 ### Bugfixes
-* fix fileprofider authorities to be unique and doesn't conflict other provider
+* create own fileprovider so it doesn't conflict other provider
 
 
 ## 1.6.0
